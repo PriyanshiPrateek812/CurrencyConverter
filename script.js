@@ -1,4 +1,4 @@
-const base_URL = "https://v6.exchangerate-api.com/v6/c8a3a6a21e97eacd3095372d/latest";
+const base_URL = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
 
 const dropdowns = document.querySelectorAll(".dropdown select");
 
@@ -13,6 +13,10 @@ document.addEventListener("load", () => {
     updateExchangeRate();
 })
 
+// for(code in countryList){
+//     console.log(code, countryList[code]);
+// }
+
 for(let select of dropdowns){
     for(currCode in countryList){
         let newOption = document.createElement("option");
@@ -20,8 +24,7 @@ for(let select of dropdowns){
         newOption.value = currCode;
         if(select.name === "from" && currCode ==="USD"){
             newOption.selected = "selected";
-        } 
-        else if(select.name === "to" && currCode ==="INR"){
+        } else if(select.name === "to" && currCode ==="INR"){
             newOption.selected = "selected";
         }
         select.appendChild(newOption);
@@ -53,17 +56,12 @@ const updateExchangeRate = async () => {
         amount.value="0";
     }
 
-    const URL = `${base_URL}/${fromCurr.value.toUpperCase()}`;
+    const URL = `${base_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toLowerCase()}.json`;
     let response = await fetch(URL);
     let data = await response.json();
-    console.log(data);
-    let rate = data["conversion_rates"];
-    let finalRate = rate[toCurr.value];
-    console.log(rate);
-    console.log(toCurr.value);
+    let rate = data[toCurr.value.toLowerCase()];
     
-    console.log(finalRate);
-
-    let finalAmount = amtVal*finalRate;
+    let finalAmount = amtVal*rate;
     msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}` ;
 }
+
